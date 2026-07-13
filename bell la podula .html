@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Advanced Bell-LaPadula System</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #000;
+    color: #00ff88;
+    text-align: center;
+}
+
+.login {
+    margin-top: 50px;
+}
+
+input, select, button {
+    padding: 10px;
+    margin: 8px;
+}
+
+button {
+    background: #00ff88;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
+
+table {
+    margin: auto;
+    border-collapse: collapse;
+    width: 70%;
+}
+
+th, td {
+    border: 1px solid #00ff88;
+    padding: 10px;
+}
+
+#output {
+    margin-top: 20px;
+    color: yellow;
+    font-size: 18px;
+}
+
+.scan {
+    margin-top: 10px;
+    font-family: monospace;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Advanced Bell–LaPadula System</h1>
+
+<!-- LOGIN -->
+<div class="login" id="loginBox">
+    <h2>Login System</h2>
+
+    <input type="text" id="username" placeholder="Username"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+
+    <button onclick="login()">Login</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="hidden" id="dashboard">
+
+<h2>Welcome <span id="user"></span></h2>
+<p>Level: <span id="level"></span></p>
+
+<div class="scan" id="scan"></div>
+
+<h3>Files</h3> 
+
+<table>
+<tr>
+<th>File</th>
+<th>Level</th>
+<th>Action</th>
+</tr>
+
+<tr>
+<td>TopSecret.txt</td>
+<td>4</td>
+<td><button onclick="check(4)">Read</button></td>
+</tr>
+
+<tr>
+<td>Secret.doc</td>
+<td>3</td>
+<td><button onclick="check(3)">Read</button></td>
+</tr>
+
+<tr>
+<td>Confidential.xls</td>
+<td>2</td>
+<td><button onclick="check(2)">Read</button></td>
+</tr>
+
+<tr>
+<td>Public.txt</td>
+<td>1</td>
+<td><button onclick="check(1)">Read</button></td>
+</tr>
+
+</table>
+
+<div id="output"></div>
+
+</div>
+
+<script>
+
+// USERS DATABASE
+const users = {
+    "Ahmed": {pass: "1234", level: 4},
+    "Ali": {pass: "1234", level: 3},
+    "Khalid": {pass: "1234", level: 2},
+    "Sara": {pass: "1234", level: 1}
+};
+
+let currentUser = "";
+let currentLevel = 0;
+
+// LOGIN FUNCTION
+function login() {
+    let u = document.getElementById("username").value;
+    let p = document.getElementById("password").value;
+
+    if(users[u] && users[u].pass === p) {
+        currentUser = u;
+        currentLevel = users[u].level;
+
+        document.getElementById("loginBox").classList.add("hidden");
+        document.getElementById("dashboard").classList.remove("hidden");
+
+        document.getElementById("user").innerText = u;
+
+        let levels = ["", "Unclassified", "Confidential", "Secret", "Top Secret"];
+        document.getElementById("level").innerText = levels[currentLevel];
+    } else {
+        alert("Invalid Login!");
+    }
+}
+
+// BELL LAPADULA READ RULE (No Read Up)
+function check(fileLevel) {
+
+    scanAnimation();
+
+    setTimeout(() => {
+
+        if(currentLevel >= fileLevel) {
+            show(" ACCESS GRANTED (READ ALLOWED)");
+        } else {
+            show(" ACCESS DENIED (NO READ UP RULE)");
+        }
+
+    }, 1500);
+}
+
+// OUTPUT
+function show(msg) {
+    document.getElementById("output").innerHTML = msg;
+}
+
+// ANIMATION
+function scanAnimation() {
+    let scan = document.getElementById("scan");
+    scan.innerHTML = "Scanning";
+
+    let i = 0;
+    let int = setInterval(() => {
+        scan.innerHTML = "Scanning" + ".".repeat(i);
+        i++;
+
+        if(i > 6) {
+            clearInterval(int);
+            scan.innerHTML = "Scan Complete";
+        }
+    }, 200);
+}
+
+</script>
+
+</body>
+</html>
